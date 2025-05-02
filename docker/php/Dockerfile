@@ -2,6 +2,7 @@ FROM php:8.3-fpm-alpine3.18
 
 RUN apk update \
     && apk add \
+    openssl\
     bash \
     vim \
     zip \
