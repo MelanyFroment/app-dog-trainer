@@ -36,4 +36,42 @@ class AuthController extends AbstractController
             'token' => $jwtManager->create($user),
         ]);
     }
+
+    #[Route('/api/register', name: 'api_register', methods: ['POST'])]
+    public function register(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher,
+        JWTTokenManagerInterface $jwtManager
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
+
+        $email = $data['email'] ?? null;
+        $password = $data['password'] ?? null;
+        $phone = $data['phone'] ?? null;
+        $roles = $data['roles'] ?? ['ROLE_USER'];
+
+        if (!$email || !$password || !$phone) {
+            return $this->json(['message' => 'Email, mot de passe et téléphone requis'], 400);
+        }
+
+        if ($em->getRepository(User::class)->findOneBy(['email' => $email])) {
+            return $this->json(['message' => 'Email déjà utilisé'], 409);
+        }
+
+        $user = new User();
+        $user->setEmail($email);
+        $user->setPassword($passwordHasher->hashPassword($user, $password));
+        $user->setPhone($phone);
+        $user->setRoles($roles);
+        $user->setCreatedDate(new \DateTimeImmutable());
+
+        $em->persist($user);
+        $em->flush();
+
+        return $this->json([
+            'message' => 'Utilisateur créé avec succès',
+            'token' => $jwtManager->create($user),
+        ], 201);
+    }
 }
