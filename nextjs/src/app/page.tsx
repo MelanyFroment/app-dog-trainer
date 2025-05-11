@@ -4,7 +4,7 @@ export default function Page() {
   return (
     <div>
       <h1>Home</h1>
-      <Link href="/auth">Authentication</Link>
+      <Link href="/login">Se connecter</Link>
       <Link href="/about">About</Link>
     </div>
   )
