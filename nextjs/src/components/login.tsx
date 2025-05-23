@@ -14,8 +14,11 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const formSchema = z.object({
-  email: z.string(),
-  password: z.string(),
+  email: z.string().email('Invalid email address.'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters.')
+    .max(16, 'Password must be less than 16 characters'),
 })
 
 const Login = () => {
@@ -27,8 +30,24 @@ const Login = () => {
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      })
+
+      if (!response.ok) throw new Error('Connection error')
+
+      const data = await response.json()
+      console.log('Connection success : ', data)
+    } catch (error) {
+      console.error(error)
+      form.setError('email', { message: 'Invalid email or password' })
+    }
   }
 
   return (
@@ -58,7 +77,7 @@ const Login = () => {
             <FormItem>
               <FormLabel>Mot de passe</FormLabel>
               <FormControl>
-                <Input placeholder="**********" {...field} />
+                <Input type="password" placeholder="**********" {...field} />
               </FormControl>
               <FormDescription>Entrez votre mot de passe</FormDescription>
               <FormMessage />
