@@ -1,0 +1,21 @@
+# Ignore Symfony cache and dependencies
+symfony/var/
+symfony/vendor/
+
+# Ignore environment files
+symfony/.env.local
+.env
+.env.*
+
+# Ignore OS and IDE files
+.DS_Store
+.idea/
+.vscode/
+
+# Ignore Git and log files
+.git
+.gitignore
+*.log
+
+# Ignore Docker configuration
+docker/
