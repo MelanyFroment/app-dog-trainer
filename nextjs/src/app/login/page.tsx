@@ -6,7 +6,7 @@ import Link from 'next/link'
 import logo from '../../images/dog.svg'
 import Login from '@/components/login'
 
-export default function Page() {
+export default function LoginPage() {
   return (
     <div className="flex h-screen flex-col md:flex-row">
       <div className="dark:bg-primary/50 flex h-full w-full flex-col items-center justify-center bg-neutral-300 md:w-1/2">
