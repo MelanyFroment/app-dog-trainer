@@ -1,13 +1,16 @@
 FROM node:22.14-alpine AS base
 
+# Install dependencies only when needed
 FROM base AS deps
 
 RUN apk add --no-cache libc6-compat
 WORKDIR /www/nextjs
 
+# Install dependencies
 COPY nextjs/package.json nextjs/package-lock.json ./
 RUN npm ci
 
+# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /www/nextjs
 COPY --from=deps /www/nextjs/node_modules /www/nextjs/node_modules
@@ -15,6 +18,7 @@ COPY nextjs ./
 
 RUN npm run build
 
+# Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /www/nextjs
 
