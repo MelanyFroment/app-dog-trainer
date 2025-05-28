@@ -16,6 +16,14 @@ services:
                 condition: service_healthy
         networks: [ appnet ]
 
+    caniplanner_nextjs:
+        container_name: caniplanner_nextjs
+        build:
+            context: .
+            dockerfile: docker/nextjs/Dockerfile
+        restart: unless-stopped
+        networks: [appnet]
+
     caniplanner_server:
         container_name: caniplanner_server
         image: nginx:1.25-alpine3.18
@@ -30,7 +38,7 @@ services:
 
     caniplanner_pg:
         container_name: caniplanner_pg
-        image: postgres:17.5-bullseye
+        image: postgres:16-alpine
         restart: always
         env_file: ".env"
         environment:
@@ -50,4 +58,5 @@ services:
 volumes:
     pgdata:
 
-networks: { appnet : { driver: bridge } }
+networks:
+    appnet:

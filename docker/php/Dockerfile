@@ -6,13 +6,21 @@ ENV COMPOSER_HOME=/tmp/composer
 
 WORKDIR /www/symfony
 
-RUN apk update \
-    && apk add --no-cache --virtual .build-deps \
-       curl libzip-dev unzip postgresql-dev oniguruma $PHPIZE_DEPS \
-    && docker-php-ext-install pdo_pgsql zip opcache \
-    && curl -sS https://getcomposer.org/installer -o composer-setup.php \
-    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && rm composer-setup.php \
+ARG BUILD_DEPS="curl libzip-dev unzip postgresql-dev oniguruma"
+ARG PHP_EXTENSIONS="pdo_pgsql zip opcache"
+
+RUN set ex \
+    # Update system
+    && apk update \
+    # Install temporaries deps
+    && apk add --no-cache --virtual .build-deps $BUILD_DEPS $PHPIZE_DEPS \
+    # Install PHP extensions
+    && docker-php-ext-install $PHP_EXTENSIONS \
+    # Install Composer
+    && curl -sS https://getcomposer.org/installer | php -- \
+       --install-dir=/usr/local/bin\
+       --filename=composer \
+    # Clean
     && apk del .build-deps $PHPIZE_DEPS \
     && rm -rf /var/cache/apk/*
 
@@ -24,17 +32,22 @@ COPY symfony ./
 FROM base AS production
 WORKDIR /www/symfony
 
+ARG SYSTEM_LIBRARIES="libzip libpq oniguruma"
+
 # Install runtime PHP extensions only
 RUN apk update \
-    && apk add --no-cache \
-       libzip libpq oniguruma \
-    && rm -rf /var/cache/apk/*
+    && echo "Install system libraries..." \
+    && apk add --no-cache $SYSTEM_LIBRARIES \
+    && echo "Clean cache..." \
+    && rm -rf /var/cache/apk/* \
+    && echo "Installation completed"
 
 # Copy artifacts from builder
 COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder /www/symfony /www/symfony
 
-RUN chown -R www-data:www-data /www/symfony/var /www/symfony/public
+RUN mkdir -p /www/symfony/var /www/symfony/public \
+    && chown -R www-data:www-data /www/symfony/var /www/symfony/public
 
 # USER www-data # Uncomment in production
 CMD ["php-fpm"]
