@@ -2,6 +2,11 @@
 symfony/var/
 symfony/vendor/
 
+# Ignore Next js
+node_modules
+npm-debug.log
+.next
+
 # Ignore environment files
 symfony/.env.local
 .env
@@ -19,3 +24,6 @@ symfony/.env.local
 
 # Ignore Docker configuration
 docker/
+
+README.md
+.swc

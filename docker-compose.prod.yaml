@@ -1,0 +1,13 @@
+services:
+    caniplanner_php:
+        environment:
+            APP_ENV: prod
+
+    caniplanner_nextjs:
+        environment:
+            NODE_ENV: production
+        command: ["node", "server.js"]
+
+    caniplanner_server:
+        ports:
+            -   "80:80"

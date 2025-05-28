@@ -1,0 +1,26 @@
+services:
+    caniplanner_php:
+        environment:
+            APP_ENV: dev
+            XDEBUG_MODE: debug,develop
+        # ports:
+        #    -   "9003:9003"
+
+    caniplanner_nextjs:
+        build:
+            context: .
+            dockerfile: docker/nextjs/Dockerfile
+            target: dev
+        volumes:
+            -   ./nextjs:/www/nextjs
+            -   nextjs_node_modules:/www/nextjs/node_modules
+            -   nextjs_dotnext:/www/nextjs/.next
+        environment:
+            NODE_ENV: development
+        command: ["sh", "-c", "npm ci && npm run dev"]
+        ports:
+            -   "3000:3000"
+
+volumes:
+    nextjs_node_modules:
+    nextjs_dotnext:
