@@ -6,3 +6,6 @@
 /*.env
 
 .swc
+
+# Ignore SonarScanner
+.scannerwork

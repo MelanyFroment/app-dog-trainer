@@ -27,3 +27,6 @@ docker/
 
 README.md
 .swc
+
+# Ignore SonarScanner
+.scannerwork
