@@ -1,2 +1,3 @@
-.idea
-.gitignore
+# JetBrains IDE
+.idea/
+*.iml
