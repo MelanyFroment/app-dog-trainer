@@ -26,7 +26,7 @@ export default function LoginPage() {
         </div>
         <p className="text-muted-foreground mt-[20px] text-sm">
           Vous n&apos;avez pas de compte ?{' '}
-          <Link className="text-blue-500" href="./">
+          <Link className="text-blue-500" href="/registration">
             En créer un !
           </Link>{' '}
         </p>
