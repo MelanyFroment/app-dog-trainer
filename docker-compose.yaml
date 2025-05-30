@@ -1,0 +1,36 @@
+services:
+  server_app:
+    container_name: server_app
+    image: nginx:1.25-alpine3.18
+    working_dir: /www
+    volumes:
+      - ./symfony:/www/symfony
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - '8080:80'
+
+  php_app:
+    container_name: php_app
+    build: ./docker/php
+    working_dir: /www/symfony
+    user: "1000"
+    volumes:
+      - ./symfony:/www/symfony
+    environment:
+      DATABASE_URL: "postgresql://melany:Y8D!=LQZ@postgres_app:5432/symfony_pg?serverVersion=16&charset=utf8"
+    depends_on:
+      - postgres_app
+
+  postgres_app:
+    image: postgres
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: melany
+      POSTGRES_PASSWORD: Y8D!=LQZ
+      POSTGRES_DB: symfony_pg
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+volumes:
+  postgres_data:
