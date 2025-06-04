@@ -1,0 +1,143 @@
+services:
+    caniplanner_php:
+        container_name: caniplanner_php
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        restart: unless-stopped
+        env_file: ".env"
+        user: ${DOCKER_USER}
+        volumes:
+            - ./symfony:/www/symfony
+        environment:
+            DATABASE_URL: ${DATABASE_URL}
+        depends_on:
+            caniplanner_pg:
+                condition: service_healthy
+        networks: [ appnet ]
+
+    caniplanner_nextjs:
+        container_name: caniplanner_nextjs
+        build:
+            context: .
+            dockerfile: docker/nextjs/Dockerfile
+        restart: unless-stopped
+        networks: [appnet]
+
+    caniplanner_server:
+        container_name: caniplanner_server
+        image: nginx:1.25-alpine3.18
+        restart: unless-stopped
+        working_dir: /www
+        volumes:
+            - ./symfony:/www/symfony
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - '8080:80'
+        networks: [ appnet ]
+
+    caniplanner_pg:
+        container_name: caniplanner_pg
+        image: postgres:16-alpine
+        restart: always
+        env_file: ".env"
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        volumes:
+            - pgdata:/var/lib/postgresql/data
+        ports:
+            - "127.0.0.1:5432:5432"
+        healthcheck:
+            test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+            interval: 10s
+            retries: 5
+        networks: [appnet]
+
+    caniplanner_sonarqube:
+        container_name: caniplanner_sonarqube
+        image: sonarqube:community
+        restart: unless-stopped
+        hostname: sonarqube
+        read_only: true
+        depends_on:
+            caniplanner_sonarqube_pg:
+                condition: service_healthy
+        environment:
+                SONAR_JDBC_URL: jdbc:postgresql://caniplanner_sonarqube_pg:5432/sonardb
+                SONAR_JDBC_USERNAME: ${SONAR_USER}
+                SONAR_JDBC_PASSWORD: ${SONAR_PASSWORD}
+        volumes:
+            - sonarqube_data:/opt/sonarqube/data
+            - sonarqube_extensions:/opt/sonarqube/extensions
+            - sonarqube_logs:/opt/sonarqube/logs
+            - sonarqube_temp:/opt/sonarqube/temp
+        ports:
+            - "9001:9000"
+        networks: [appnet]
+
+    caniplanner_sonarqube_pg:
+        container_name: caniplanner_sonarqube_pg
+        image: postgres:16-alpine
+        restart: always
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        env_file: ".env"
+        environment:
+            POSTGRES_USER: ${SONAR_USER}
+            POSTGRES_PASSWORD: ${SONAR_PASSWORD}
+            POSTGRES_DB: ${SONAR_DB}
+        volumes:
+            - postgresql_sq:/var/lib/postgresql
+            - postgresql_sq_data:/var/lib/postgresql/data
+        networks: [appnet]
+
+    caniplanner_scanner_symfony:
+        container_name: caniplanner_scanner_symfony
+        image: sonarsource/sonar-scanner-cli:latest
+        restart: "no"
+        depends_on:
+            - caniplanner_sonarqube
+        volumes:
+            - ./symfony:/usr/src
+        working_dir: /usr/src
+        env_file:
+            - .env
+        environment:
+            SONAR_HOST_URL: http://sonarqube:9000
+            SONAR_LOGIN: ${SONAR_TOKEN}
+        networks: [appnet]
+        entrypoint: [ "sonar-scanner" ]
+
+    caniplanner_scanner_nextjs:
+        container_name: caniplanner_scanner_nextjs
+        image: sonarsource/sonar-scanner-cli:latest
+        restart: "no"
+        depends_on:
+            - caniplanner_sonarqube
+        volumes:
+            - ./nextjs:/usr/src
+        working_dir: /usr/src
+        env_file:
+            - .env
+        environment:
+            - SONAR_HOST_URL=http://sonarqube:9000
+            - SONAR_LOGIN=${SONAR_TOKEN}
+        networks: [appnet]
+        entrypoint: [ "sonar-scanner" ]
+
+volumes:
+    pgdata:
+    sonarqube_data:
+    sonarqube_temp:
+    sonarqube_extensions:
+    sonarqube_logs:
+    postgresql_sq:
+    postgresql_sq_data:
+
+networks:
+    appnet:

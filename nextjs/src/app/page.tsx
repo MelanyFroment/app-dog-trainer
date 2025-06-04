@@ -7,8 +7,8 @@ export default function Page() {
     const router = useRouter()
 
     const handleLogout = () => {
-        localStorage.removeItem('token') // supprime le token JWT
-        router.push('/login') // redirige vers la page de connexion
+        localStorage.removeItem('token')
+        router.push('/login')
     }
 
     return (
