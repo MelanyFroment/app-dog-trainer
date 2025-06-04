@@ -18,14 +18,22 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 const formSchema = z.object({
-    email: z.string().email('Adresse email invalide.'),
+    email: z.string().email('Adresse email invalide'),
+    phone: z
+        .string()
+        .min(10, 'Le numéro doit contenir au moins 10 chiffres')
+        .regex(/^\d+$/, 'Le numéro doit contenir uniquement des chiffres'),
     password: z
         .string()
-        .min(5, 'Le mot de passe doit contenir au moins 5 caractères.')
-        .max(16, 'Le mot de passe doit faire moins de 16 caractères.'),
+        .min(5, 'Le mot de passe doit contenir au moins 5 caractères')
+        .max(16, 'Le mot de passe doit faire moins de 16 caractères'),
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: 'Les mots de passe ne correspondent pas',
+    path: ['confirmPassword'],
 })
 
-const Login = () => {
+const Register = () => {
     const router = useRouter()
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [generalError, setGeneralError] = useState('')
@@ -34,7 +42,9 @@ const Login = () => {
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: '',
+            phone: '',
             password: '',
+            confirmPassword: '',
         },
     })
 
@@ -43,31 +53,28 @@ const Login = () => {
         setGeneralError('')
 
         try {
-            const response = await fetch('http://localhost:8080/api/login', {
+            const response = await fetch('http://localhost:8080/api/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: values.email,
+                    phone: values.phone,
+                    password: values.password,
+                }),
             })
 
             if (!response.ok) {
                 const errorBody = await response.text()
                 console.error('HTTP Error:', response.status, errorBody)
-                throw new Error('Erreur de connexion')
+                throw new Error('Erreur lors de l’inscription')
             }
 
             const data = await response.json()
-            if (data.token) {
-                localStorage.setItem('token', data.token)
-                router.push('/')
-            } else {
-                throw new Error('Token manquant dans la réponse')
-            }
+            console.log('Inscription réussie :', data)
+            router.push('/login')
         } catch (error) {
             console.error(error)
-            setGeneralError("Email ou mot de passe incorrect.")
-            form.setError('email', { message: '' })
+            setGeneralError("Une erreur est survenue. Veuillez réessayer.")
         } finally {
             setIsSubmitting(false)
         }
@@ -75,10 +82,7 @@ const Login = () => {
 
     return (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="grid gap-y-[20px]"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-y-[20px]">
                 <FormField
                     control={form.control}
                     name="email"
@@ -95,14 +99,41 @@ const Login = () => {
                 />
                 <FormField
                     control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Téléphone</FormLabel>
+                            <FormControl>
+                                <Input placeholder="0612345678" {...field} />
+                            </FormControl>
+                            <FormDescription>Votre numéro de téléphone</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
                     name="password"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Mot de passe</FormLabel>
                             <FormControl>
-                                <Input type="password" placeholder="**********" {...field} />
+                                <Input type="password" placeholder="********" {...field} />
                             </FormControl>
-                            <FormDescription>Entrez votre mot de passe</FormDescription>
+                            <FormDescription>Choisissez un mot de passe sécurisé</FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Confirmer le mot de passe</FormLabel>
+                            <FormControl>
+                                <Input type="password" placeholder="********" {...field} />
+                            </FormControl>
                             <FormMessage />
                         </FormItem>
                     )}
@@ -113,11 +144,11 @@ const Login = () => {
                 )}
 
                 <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Connexion...' : 'Se connecter'}
+                    {isSubmitting ? 'Inscription...' : "S'inscrire"}
                 </Button>
             </form>
         </Form>
     )
 }
 
-export default Login
+export default Register
