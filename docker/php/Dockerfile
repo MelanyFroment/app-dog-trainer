@@ -1,54 +1,59 @@
 FROM php:8.3-fpm-alpine3.18 AS base
 
+ARG PHP_EXTENSIONS="pdo_pgsql zip opcache"
+ARG BUILD_DEPS="curl libzip-dev oniguruma postgresql-dev unzip"
+ARG SYSTEM_LIBRARIES="libzip libpq oniguruma"
+ARG APP_DIR=/www/symfony
+
 FROM base AS builder
 
 ENV COMPOSER_HOME=/tmp/composer
 
-WORKDIR /www/symfony
+WORKDIR ${APP_DIR}
 
-ARG BUILD_DEPS="curl libzip-dev unzip postgresql-dev oniguruma"
-ARG PHP_EXTENSIONS="pdo_pgsql zip opcache"
-
-RUN set ex \
-    # Update system
+RUN set -ex \
+    && echo "==> Installing system dependencies..." \
     && apk update \
-    # Install temporaries deps
-    && apk add --no-cache --virtual .build-deps $BUILD_DEPS $PHPIZE_DEPS \
-    # Install PHP extensions
-    && docker-php-ext-install $PHP_EXTENSIONS \
-    # Install Composer
+    && apk add --no-cache --virtual .build-deps \
+       $(echo "$BUILD_DEPS $PHPIZE_DEPS" | tr ' ' '\n' | sort | tr '\n' ' ') \
+    \
+    && echo "==> Installing PHP extensions..." \
+    && docker-php-ext-install ${PHP_EXTENSIONS} \
+    \
+    && echo "==> Installing Composer..." \
     && curl -sS https://getcomposer.org/installer | php -- \
        --install-dir=/usr/local/bin\
        --filename=composer \
-    # Clean
-    && apk del .build-deps $PHPIZE_DEPS \
+    \
+    && echo "==> Cleanning up..." \
+    && apk del .build-deps ${PHPIZE_DEPS} \
     && rm -rf /var/cache/apk/*
 
-COPY symfony/composer.json symfony/composer.lock ./
-RUN composer install --no-dev --optimize-autoloader --prefer-dist || (echo "--- Composer Error Output ---" && cat var/log/*.log || true)
+# Install dependencies
+COPY symfony/composer.* ./
+RUN composer install --no-dev --optimize-autoloader --prefer-dist \
+    || (echo "==> Composer installation failed" \ && cat var/log/*.log || true)
 
 COPY symfony ./
 
 FROM base AS production
-WORKDIR /www/symfony
+WORKDIR ${APP_DIR}
 
-ARG SYSTEM_LIBRARIES="libzip libpq oniguruma"
-
-# Install runtime PHP extensions only
-RUN apk update \
-    && echo "Install system libraries..." \
-    && apk add --no-cache $SYSTEM_LIBRARIES \
-    && echo "Clean cache..." \
+# Install runtime dependencies
+RUN echo "==> Setting up production environment..." \
+    && apk update \
+    && apk add --no-cache ${SYSTEM_LIBRARIES} \
     && rm -rf /var/cache/apk/* \
-    && echo "Installation completed"
+    \
+    && echo "==> Creating directory structure..." \
+    && mkdir -p /www/symfony/var /www/symfony/public \
+    && chown -R www-data:www-data /www/symfony/var /www/symfony/public
 
 # Copy artifacts from builder
 COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
 COPY --from=builder /www/symfony /www/symfony
 
-RUN mkdir -p /www/symfony/var /www/symfony/public \
-    && chown -R www-data:www-data /www/symfony/var /www/symfony/public
-
+# Production configuration
 # USER www-data # Uncomment in production
 CMD ["php-fpm"]
 EXPOSE 9000
