@@ -14,7 +14,7 @@ services:
         depends_on:
             caniplanner_pg:
                 condition: service_healthy
-        networks: [ appnet ]
+        networks: [caniplanner_net]
 
     caniplanner_nextjs:
         container_name: caniplanner_nextjs
@@ -22,7 +22,7 @@ services:
             context: .
             dockerfile: docker/nextjs/Dockerfile
         restart: unless-stopped
-        networks: [appnet]
+        networks: [caniplanner_net]
 
     caniplanner_server:
         container_name: caniplanner_server
@@ -34,7 +34,7 @@ services:
             - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
         ports:
             - '8080:80'
-        networks: [ appnet ]
+        networks: [caniplanner_net]
 
     caniplanner_pg:
         container_name: caniplanner_pg
@@ -53,7 +53,7 @@ services:
             test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
             interval: 10s
             retries: 5
-        networks: [appnet]
+        networks: [caniplanner_net]
 
     caniplanner_sonarqube:
         container_name: caniplanner_sonarqube
@@ -75,7 +75,7 @@ services:
             - sonarqube_temp:/opt/sonarqube/temp
         ports:
             - "9001:9000"
-        networks: [appnet]
+        networks: [caniplanner_net]
 
     caniplanner_sonarqube_pg:
         container_name: caniplanner_sonarqube_pg
@@ -94,7 +94,7 @@ services:
         volumes:
             - postgresql_sq:/var/lib/postgresql
             - postgresql_sq_data:/var/lib/postgresql/data
-        networks: [appnet]
+        networks: [caniplanner_net]
 
     caniplanner_scanner_symfony:
         container_name: caniplanner_scanner_symfony
@@ -110,7 +110,7 @@ services:
         environment:
             SONAR_HOST_URL: http://sonarqube:9000
             SONAR_LOGIN: ${SONAR_TOKEN}
-        networks: [appnet]
+        networks: [caniplanner_net]
         entrypoint: [ "sonar-scanner" ]
 
     caniplanner_scanner_nextjs:
@@ -127,7 +127,7 @@ services:
         environment:
             - SONAR_HOST_URL=http://sonarqube:9000
             - SONAR_LOGIN=${SONAR_TOKEN}
-        networks: [appnet]
+        networks: [caniplanner_net]
         entrypoint: [ "sonar-scanner" ]
 
 volumes:
@@ -140,4 +140,4 @@ volumes:
     postgresql_sq_data:
 
 networks:
-    appnet:
+    caniplanner_net:
