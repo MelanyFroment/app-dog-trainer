@@ -31,7 +31,6 @@ security:
             logout:
                 path: app_logout
 
-    #Règles d'accès globales
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }

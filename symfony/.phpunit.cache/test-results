@@ -1,0 +1,1 @@
+{"version":1,"defects":{"App\\Tests\\Functional\\ClientControllerTest::testAccessDeniedForUnauthenticatedUser":7},"times":{"App\\Tests\\Functional\\ClientControllerTest::testAccessDeniedForUnauthenticatedUser":6,"App\\Tests\\Unit\\Repository\\ClientRepositoryTest::testFindByEducatorReturnsOnlyClientsOfThatUser":1.003}}
