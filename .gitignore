@@ -6,3 +6,4 @@
 .swc
 # Ignore SonarScanner
 .scannerwork
+./pgdata

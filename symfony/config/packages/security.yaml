@@ -17,7 +17,7 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
+            
         # Firewall pour toutes les routes API + authentification par JWT
         api:
             pattern: ^/api
