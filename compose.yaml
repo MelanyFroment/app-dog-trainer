@@ -5,11 +5,12 @@ services:
             context: .
             dockerfile: docker/php/Dockerfile
 
-        user: "1000"
+
+        # user: "1000"
         volumes:
             - ./symfony:/www/symfony
-        environment:
-            DATABASE_URL: ${DATABASE_URL}
+            #environment:
+            #  DATABASE_URL: ${DATABASE_URL}
 
     caniplanner_server:
         container_name: caniplanner_server
