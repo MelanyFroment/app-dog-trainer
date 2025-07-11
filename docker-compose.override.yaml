@@ -3,8 +3,6 @@ services:
         environment:
             APP_ENV: dev
             XDEBUG_MODE: debug,develop
-        # ports:
-        #    -   "9003:9003"
 
     caniplanner_nextjs:
         build:

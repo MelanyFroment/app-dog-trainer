@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from "next/image";
+import Link from "next/link";
 
-import logo from '../../images/dog.svg'
-import Login from '@/components/login'
+import logo from "../../images/dog.svg";
+import Login from "@/components/login";
 
 export default function LoginPage() {
   return (
@@ -25,12 +25,12 @@ export default function LoginPage() {
           <Login />
         </div>
         <p className="text-muted-foreground mt-[20px] text-sm">
-          Vous n&apos;avez pas de compte ?{' '}
+          Vous n&apos;avez pas de compte ?{" "}
           <Link className="text-blue-500" href="/registration">
             En créer un !
-          </Link>{' '}
+          </Link>{" "}
         </p>
       </div>
     </div>
-  )
+  );
 }
