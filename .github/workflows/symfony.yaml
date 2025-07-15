@@ -17,6 +17,15 @@ permissions:
 jobs:
   symfony-tests:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_USER: ${{ secrets.DOCKER_USER }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      SONAR_USER: ${{ secrets.SONAR_USER }}
+      SONAR_PASSWORD: ${{ secrets.DOCKER_USER }}
+      SONAR_DB: ${{ secrets.SONAR_DB }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Copy .env.test.local
