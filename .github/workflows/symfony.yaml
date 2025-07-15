@@ -2,12 +2,12 @@ name: symfony
 
 on:
     push:
-        branches: [main]
+        branches: [main, dev]
         paths:
             - 'symfony/**'
             - '.github/workflows/symfony.yaml'
     pull_request:
-        branches: [main]
+        branches: [main, dev]
         paths:
             - 'symfony/**'
             - '.github/workflows/symfony.yaml'
