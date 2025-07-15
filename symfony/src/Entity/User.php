@@ -37,6 +37,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: false)]
     private ?Company $company = null;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $isCompanySuperAdmin = false;
+
     /**
      * @var Collection<int, Session>
      */
@@ -54,8 +57,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->sessions = new ArrayCollection();
         $this->schedules = new ArrayCollection();
     }
-
-    // ------------------ Getters / Setters ------------------ //
 
     public function getId(): ?int
     {
@@ -117,8 +118,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // ------------------ UserInterface ------------------ //
-
     public function eraseCredentials(): void {}
 
     public function getUserIdentifier(): string
@@ -134,7 +133,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+        return $this;
+    }
 
+    public function isCompanySuperAdmin(): bool
+    {
+        return $this->isCompanySuperAdmin;
+    }
+
+    public function setIsCompanySuperAdmin(bool $isSuperAdmin): static
+    {
+        $this->isCompanySuperAdmin = $isSuperAdmin;
         return $this;
     }
 
@@ -159,7 +168,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSession(Session $session): static
     {
         if ($this->sessions->removeElement($session)) {
-            // set the owning side to null (unless already changed)
             if ($session->getEducator() === $this) {
                 $session->setEducator(null);
             }
@@ -189,7 +197,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeSchedule(Schedule $schedule): static
     {
         if ($this->schedules->removeElement($schedule)) {
-            // set the owning side to null (unless already changed)
             if ($schedule->getEducator() === $this) {
                 $schedule->setEducator(null);
             }
