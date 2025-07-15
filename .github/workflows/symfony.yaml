@@ -18,9 +18,9 @@ jobs:
   symfony-tests:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Build docker
         run: docker compose build
-
       - name: Run tests
         run:  docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
       #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
