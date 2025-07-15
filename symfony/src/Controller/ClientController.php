@@ -27,7 +27,13 @@ class ClientController extends AbstractController
         }
 
         $client = $serializer->deserialize($request->getContent(), Client::class, 'json');
+
+        // Ajout des liens logiques
         $client->setEducator($user);
+
+        if ($user->getCompany()) {
+            $client->setCompany($user->getCompany());
+        }
 
         $em->persist($client);
         $em->flush();
@@ -53,7 +59,6 @@ class ClientController extends AbstractController
 
         return new JsonResponse($json, 200, [], true);
     }
-
 
     #[Route('/api/clients/{id}', name: 'api_update_client', methods: ['PUT'])]
     public function updateClient(
@@ -94,8 +99,6 @@ class ClientController extends AbstractController
         return new JsonResponse(['message' => 'Client mis à jour avec succès'], 200);
     }
 
-
-
     #[Route('/api/clients/{id}', name: 'api_delete_client', methods: ['DELETE'])]
     public function deleteClient(
         int $id,
@@ -119,5 +122,4 @@ class ClientController extends AbstractController
 
         return new JsonResponse(['message' => 'Client supprimé avec succès']);
     }
-
 }
