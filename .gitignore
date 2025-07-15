@@ -2,8 +2,8 @@
 .idea/
 *.iml
 # Environment variables
-/*.env
+*/.env
 .swc
 # Ignore SonarScanner
 .scannerwork
-./pgdata
+pgdata/
