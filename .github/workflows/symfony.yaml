@@ -43,4 +43,4 @@ jobs:
       - name: Execute tests (Unit and Feature tests) via PHPUnit
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-        run: ./symfony/vendor/bin/phpunit --debug
+        run: cd symfony && ./vendor/bin/phpunit
