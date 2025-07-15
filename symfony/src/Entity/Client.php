@@ -37,8 +37,12 @@ class Client
     private ?string $profilPic = null;
 
     #[ORM\ManyToOne(inversedBy: 'clients')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Company $company = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $educator = null;
 
     /**
      * @var Collection<int, Dog>
@@ -64,7 +68,6 @@ class Client
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
-
         return $this;
     }
 
@@ -76,7 +79,6 @@ class Client
     public function setLastname(string $lastname): static
     {
         $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -88,7 +90,6 @@ class Client
     public function setAddress(string $address): static
     {
         $this->address = $address;
-
         return $this;
     }
 
@@ -100,7 +101,6 @@ class Client
     public function setPostalCode(string $postalCode): static
     {
         $this->postalCode = $postalCode;
-
         return $this;
     }
 
@@ -112,7 +112,6 @@ class Client
     public function setCity(string $city): static
     {
         $this->city = $city;
-
         return $this;
     }
 
@@ -124,7 +123,6 @@ class Client
     public function setPhone(string $phone): static
     {
         $this->phone = $phone;
-
         return $this;
     }
 
@@ -136,7 +134,6 @@ class Client
     public function setProfilPic(?string $profilPic): static
     {
         $this->profilPic = $profilPic;
-
         return $this;
     }
 
@@ -148,7 +145,17 @@ class Client
     public function setCompany(?Company $company): static
     {
         $this->company = $company;
+        return $this;
+    }
 
+    public function getEducator(): ?User
+    {
+        return $this->educator;
+    }
+
+    public function setEducator(?User $educator): static
+    {
+        $this->educator = $educator;
         return $this;
     }
 
