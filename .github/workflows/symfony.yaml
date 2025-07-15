@@ -35,7 +35,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
       - name: Install Dependencies
-        run: cd symfony && composer install --no-dev --optimize-autoloader --prefer-dist
+        run: cd symfony && composer install --no-dev --optimize-autoloader --prefer-dist --ignore-platform-reqs
       - name: Create Database
         run: |
           mkdir -p data
