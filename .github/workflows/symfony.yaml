@@ -28,6 +28,8 @@ jobs:
       SONAR_DB: ${{ secrets.SONAR_DB }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
+
+      # Installation
       - uses: actions/checkout@v4
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
@@ -37,8 +39,13 @@ jobs:
         run: docker compose up -d
       - name: Wait for containers to be ready
         run: sleep 10
+      - name: Install dependencies
+        run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
+
+        # Tests
       - name: Run tests
-        run:  docker compose exec caniplanner_php sh -c 'ls -la && ./vendor/bin/phpunit --debug'
+        run: docker compose exec caniplanner_php sh -c 'ls -la && ./vendor/bin/phpunit --debug'
+
       #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
       # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
 #      - uses: shivammathur/setup-php@v2

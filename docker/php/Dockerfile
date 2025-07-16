@@ -22,16 +22,6 @@ RUN apk update \
     && apk del .build-deps $PHPIZE_DEPS \
     && rm -rf /var/cache/apk/*
 
-
-FROM base AS builder
-
-ENV COMPOSER_HOME=/tmp/composer
-WORKDIR ${APP_DIR}
-
-COPY symfony ./
-RUN composer install --optimize-autoloader --prefer-dist
-
-
 FROM base AS production
 WORKDIR ${APP_DIR}
 
@@ -39,8 +29,6 @@ RUN echo "==> Setting up production environment..." \
     && rm -rf /var/cache/apk/* \
     && mkdir -p /www/symfony/var /www/symfony/public \
     && chown -R www-data:www-data /www/symfony/var /www/symfony/public
-
-COPY --from=builder /www/symfony /www/symfony
 
 CMD ["php-fpm"]
 EXPOSE 9000
