@@ -29,7 +29,7 @@ ENV COMPOSER_HOME=/tmp/composer
 WORKDIR ${APP_DIR}
 
 COPY symfony ./
-RUN composer install --no-dev --optimize-autoloader --prefer-dist
+RUN composer install --optimize-autoloader --prefer-dist
 
 
 FROM base AS production
