@@ -33,6 +33,10 @@ jobs:
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
       - name: Build docker
         run: docker compose build
+      - name: Start containers
+        run: docker compose up -d
+      - name: Wait for containers to be ready
+        run: sleep 10
       - name: Run tests
         run:  docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit --debug'
       #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
