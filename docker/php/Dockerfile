@@ -29,7 +29,7 @@ ENV COMPOSER_HOME=/tmp/composer
 WORKDIR ${APP_DIR}
 
 COPY symfony/composer.* ./
-RUN composer install --no-dev --optimize-autoloader --prefer-dist || (echo "==> Composer installation failed" && cat var/log/*.log || true)
+RUN composer install --optimize-autoloader --prefer-dist || (echo "==> Composer installation failed" && cat var/log/*.log || true)
 
 COPY symfony ./
 
