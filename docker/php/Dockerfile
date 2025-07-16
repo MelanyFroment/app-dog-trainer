@@ -28,7 +28,7 @@ FROM base AS builder
 ENV COMPOSER_HOME=/tmp/composer
 WORKDIR ${APP_DIR}
 
-COPY symfony ./
+#COPY symfony ./
 RUN composer install --optimize-autoloader --prefer-dist
 
 
