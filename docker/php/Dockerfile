@@ -16,6 +16,8 @@ RUN apk update \
     \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && curl -sS https://getcomposer.org/installer \
+        | php -- --install-dir=/usr/local/bin --filename=composer \
     \
     && apk del .build-deps $PHPIZE_DEPS \
     && rm -rf /var/cache/apk/*
