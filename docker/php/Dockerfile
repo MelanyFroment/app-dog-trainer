@@ -28,10 +28,8 @@ FROM base AS builder
 ENV COMPOSER_HOME=/tmp/composer
 WORKDIR ${APP_DIR}
 
-COPY symfony/composer.* ./
-RUN composer install --no-dev --optimize-autoloader --prefer-dist
-
 COPY symfony ./
+RUN composer install --no-dev --optimize-autoloader --prefer-dist
 
 
 FROM base AS production
