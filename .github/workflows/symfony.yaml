@@ -38,6 +38,12 @@ jobs:
       - name: Start containers
         run: docker compose up -d
 
+      - name: Wait for containers to be ready
+        run: sleep 10
+
+      - name: Install Composer dependencies in container
+        run: docker compose exec -T caniplanner_php sh -c "composer install --no-interaction --prefer-dist"
+
       - name: Run PHPUnit with coverage
         run: docker compose exec -T caniplanner_php sh -c "XDEBUG_MODE=coverage APP_ENV=test ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml"
 
