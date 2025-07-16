@@ -31,16 +31,24 @@ jobs:
 
       # Installation
       - uses: actions/checkout@v4
+
       - name: Copy .env.test.local
         run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+
       - name: Build docker
         run: docker compose build
+
       - name: Start containers
         run: docker compose up -d
+
       - name: Wait for containers to be ready
-        run: sleep 10
+        run: sleep 15
+
       - name: Install dependencies
         run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
+
+      - name: Blabla
+        run: docker compose exec caniplanner_php sh -c 'psql postgresql://melany:test123@caniplanner_pg:5432/caninpg_bd?serverVersion=16&charset=utf8'
 
         # Tests
       - name: Run tests

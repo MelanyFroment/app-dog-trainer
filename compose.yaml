@@ -10,6 +10,8 @@ services:
             -   caniplanner_pg
         networks:
             - caniplanner
+        expose:
+            - 9000
 
     caniplanner_server:
         container_name: caniplanner_server
@@ -24,7 +26,9 @@ services:
         networks:
             - caniplanner
         ports:
-            - '8080:80'
+            - '80:8080'
+        expose:
+            - 8080
 
     caniplanner_pg:
         container_name: caniplanner_pg
@@ -39,6 +43,8 @@ services:
             - caniplanner
         ports:
             - "5432:5432"
+        expose:
+            - 5432
 
 networks:
     caniplanner:
