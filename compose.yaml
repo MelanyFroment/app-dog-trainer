@@ -7,9 +7,9 @@ services:
 
 
         # user: "1000"
-        volumes:
-            - ./symfony:/www/symfony:cached
-            - ./symfony/vendor:/www/symfony/vendor
+#        volumes:
+#            - ./symfony:/www/symfony:cached
+#            - ./symfony/vendor:/www/symfony/vendor
             #environment:
             #  DATABASE_URL: ${DATABASE_URL}
 
