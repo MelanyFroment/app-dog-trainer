@@ -38,7 +38,7 @@ jobs:
       - name: Wait for containers to be ready
         run: sleep 10
       - name: Run tests
-        run:  docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit --debug'
+        run:  docker compose exec caniplanner_php sh -c 'ls -la ./vendor && ./vendor/bin/phpunit --debug'
       #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
       # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
 #      - uses: shivammathur/setup-php@v2
