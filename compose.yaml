@@ -6,6 +6,7 @@ services:
             dockerfile: docker/php/Dockerfile
         volumes:
             - ./symfony:/www/symfony
+            - ./symfony/vendor:/www/symfony/vendor
         depends_on:
             -   caniplanner_pg
         networks:
