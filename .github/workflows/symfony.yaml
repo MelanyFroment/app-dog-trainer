@@ -49,10 +49,7 @@ jobs:
           done
 
       - name: Install deps & migrate
-        run: docker compose exec caniplanner_php sh -c '
-          composer install --optimize-autoloader --prefer-dist &&
-          php bin/console doctrine:migrations:migrate --no-interaction
-
+        run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist && php bin/console doctrine:migrations:migrate --no-interaction'
 
       - name: Run tests
         run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
