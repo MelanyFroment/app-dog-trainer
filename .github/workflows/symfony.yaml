@@ -45,7 +45,7 @@ jobs:
         run: sleep 15
 
       - name: Install dependencies
-        run: docker compose run caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
+        run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
 
         # Tests
       - name: Run tests
