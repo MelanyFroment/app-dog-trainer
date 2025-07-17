@@ -49,10 +49,13 @@ jobs:
           done
 
       - name: Install deps & migrate
-        run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist && php bin/console doctrine:migrations:migrate --no-interaction'
-
+        run: |
+          docker compose run --rm -e XDEBUG_MODE=off caniplanner_php sh -c '
+            composer install --optimize-autoloader --prefer-dist &&
+            php bin/console doctrine:migrations:migrate --no-interaction
+          '
       - name: Run tests
-        run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
+        run: docker compose run caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
 
 
       #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
