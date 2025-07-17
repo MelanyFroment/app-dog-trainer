@@ -37,7 +37,7 @@ jobs:
                     cache: 'npm'
                     cache-dependency-path: nextjs/package-lock.json
 
-            -   name: Cache .next build artefacts
+            -   name: Cach .next build artefacts
                 uses: actions/cache@v3
                 with:
                     path: nextjs/.next/cache
