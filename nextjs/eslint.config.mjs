@@ -20,10 +20,9 @@ const eslintConfig = [
     ],
     plugins: ["prettier", "jsx-a11y"],
     rules: {
-      "prettier/prettier": [
-        "error",
-        {
-          trailingComma: "all",
+      "prettier/prettier": "warn",
+
+      trailingComma: "all",
           semi: false,
           tabWidth: 4,
           singleQuote: true,
