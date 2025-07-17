@@ -17,6 +17,7 @@ permissions:
 
 jobs:
     test:
+        name: Test Next.js App
         runs-on: ubuntu-latest
 
         strategy:
