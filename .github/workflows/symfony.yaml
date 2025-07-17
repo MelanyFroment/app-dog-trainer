@@ -28,55 +28,16 @@ jobs:
       SONAR_DB: ${{ secrets.SONAR_DB }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
-
-      # Installation
       - uses: actions/checkout@v4
-
-      - name: Copy .env.test.local
-        run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
 
       - name: Build docker
         run: docker compose build
 
       - name: Start containers
-        run: docker compose up -d
+        run: docker compose up -d --wait
 
       - name: Wait for containers to be ready
-        run: sleep 15
+        run: sleep 60
 
-      - name: Install dependencies
-        run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
-
-      - name: Blabla
-        run: docker compose exec caniplanner_pg sh -c 'psql postgresql://melany:test123@caniplanner_pg:5432/caninpg_bd'
-
-        # Tests
       - name: Run tests
         run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
-
-      #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
-      # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
-#      - uses: shivammathur/setup-php@v2
-#        with:
-#          php-version: '8.3'
-#      - uses: actions/checkout@v4
-#      - name: Copy .env.test.local
-#        run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-#      - name: Cache Composer packages
-#        id: composer-cache
-#        uses: actions/cache@v3
-#        with:
-#          path: symfony/vendor
-#          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-#          restore-keys: |
-#            ${{ runner.os }}-php-
-#      - name: Install Dependencies
-#        run: cd symfony && composer install --optimize-autoloader --prefer-dist --ignore-platform-reqs
-#      - name: Create Database
-#        run: |
-#          mkdir -p data
-#          touch data/database.sqlite
-#      - name: Execute tests (Unit and Feature tests) via PHPUnit
-#        env:
-#          DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-#        run: cd symfony && ./vendor/bin/phpunit
