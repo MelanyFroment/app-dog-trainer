@@ -42,7 +42,7 @@ jobs:
         run: docker compose up -d
 
       - name: Wait for containers to be ready
-        run: sleep 15
+        run: sleep 16
 
       - name: Install dependencies
         run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
