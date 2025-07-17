@@ -41,15 +41,18 @@ jobs:
       - name: Start containers
         run: docker compose up -d
 
-      - name: Wait for containers to be ready
-        run: sleep 15
-
+      - name: Wait for caniplanner_php
+        run: |
+          for i in {1..10}; do
+            docker compose exec caniplanner_php php -v && break
+            echo "Waiting for caniplanner_php..." && sleep 3
+          done
       - name: Install dependencies
-        run: docker compose run  caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
+        run: docker compose exec caniplanner_php sh -c 'composer install --optimize-autoloader --prefer-dist'
 
         # Tests
       - name: Run tests
-        run: docker compose run  caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
+        run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
 
       #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
       # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
