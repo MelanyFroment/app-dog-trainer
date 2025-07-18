@@ -8,30 +8,30 @@ import Login from "@/components/login";
 import Register from "@/components/register";
 
 export default function LoginPage() {
-  return (
-    <div className="flex h-screen flex-col md:flex-row">
-      <div className="dark:bg-primary/50 flex h-full w-full flex-col items-center justify-center bg-neutral-300 md:w-1/2">
-        <Image
-          className="mb-[30px]"
-          src={logo}
-          width={100}
-          height={100}
-          alt="Dog logo"
-        />
-        <h1 className="text-5xl font-extrabold">Cani&apos;Planner</h1>
-      </div>
-      <div className="flex h-full w-full flex-col items-center justify-center p-[20px] md:w-1/2">
-        <h1 className="mb-[30px] text-4xl">Inscription</h1>
-        <div className="w-full max-w-[353px]">
-          <Register />
+    return (
+        <div className="flex h-screen flex-col md:flex-row">
+            <div className="dark:bg-primary/50 flex h-full w-full flex-col items-center justify-center bg-neutral-300 md:w-1/2">
+                <Image
+                    className="mb-[30px]"
+                    src={logo}
+                    width={100}
+                    height={100}
+                    alt="Dog logo"
+                />
+                <h1 className="text-5xl font-extrabold">Cani&apos;Planner</h1>
+            </div>
+            <div className="flex h-full w-full flex-col items-center justify-center p-[20px] md:w-1/2">
+                <h1 className="mb-[30px] text-4xl">Inscription</h1>
+                <div className="w-full max-w-[353px]">
+                    <Register />
+                </div>
+                <p className="text-muted-foreground mt-[20px] text-sm">
+                    Connectez-vous ?{" "}
+                    <Link className="text-blue-500" href="/login">
+                        Connexion
+                    </Link>{" "}
+                </p>
+            </div>
         </div>
-        <p className="text-muted-foreground mt-[20px] text-sm">
-          Connectez-vous ?{" "}
-          <Link className="text-blue-500" href="/login">
-            Connexion
-          </Link>{" "}
-        </p>
-      </div>
-    </div>
-  );
+    );
 }

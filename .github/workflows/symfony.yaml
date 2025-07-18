@@ -1,8 +1,3 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 name: Symfony
 
 on:
@@ -41,6 +36,7 @@ jobs:
         run: sleep 60
 
       - name: Run testsss
+
         run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml'
 
       - name: SonarCloud Scan test

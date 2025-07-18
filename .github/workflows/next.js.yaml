@@ -2,12 +2,12 @@ name: Node.js CI
 
 on:
     push:
-        branches: [ "main", "dev" ]
+        branches: [main]
         paths:
             - 'nextjs/**'
             - '.github/workflows/next.js.yaml'
     pull_request:
-        branches: [ "main", "dev" ]
+        branches: [main]
         paths:
             - 'nextjs/**'
             - '.github/workflows/next.js.yaml'
@@ -17,7 +17,6 @@ permissions:
 
 jobs:
     test:
-        name: Test Next.js App
         runs-on: ubuntu-latest
 
         strategy:
@@ -38,7 +37,7 @@ jobs:
                     cache: 'npm'
                     cache-dependency-path: nextjs/package-lock.json
 
-            -   name: Cach .next build artefacts
+            -   name: Cache .next build artefacts
                 uses: actions/cache@v3
                 with:
                     path: nextjs/.next/cache
@@ -50,6 +49,7 @@ jobs:
                 run: npm ci
 
             -   name: Run unit tests with coverage
+
                 run: npm test -- --coverage
 
             - name: Check SONAR_TOKEN presence
@@ -69,7 +69,6 @@ jobs:
                   projectBaseDir: nextjs
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
 
     build:
         needs: test
