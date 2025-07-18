@@ -1,3 +1,8 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
 name: Symfony
 
 on:
@@ -11,7 +16,6 @@ permissions:
 
 jobs:
   symfony-tests:
-    name: Tests Symfony
     runs-on: ubuntu-latest
     environment: app-dog-trainer
     env:
@@ -36,11 +40,4 @@ jobs:
         run: sleep 60
 
       - name: Run tests
-        run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml'
-
-      - name: SonarCloud Scan test
-        uses: SonarSource/sonarcloud-github-action@v2
-        with:
-          projectBaseDir: symfony
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
