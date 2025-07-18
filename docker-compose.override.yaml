@@ -2,7 +2,7 @@ services:
     caniplanner_php:
         environment:
             APP_ENV: dev
-            XDEBUG_MODE: debug,develop
+            XDEBUG_MODE: debug,develop,coverage
         volumes:
             - ./symfony:/www/symfony
 
