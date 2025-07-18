@@ -12,8 +12,6 @@ services:
             - caniplanner
         expose:
             - 9000
-        environment:
-            JWT_PASSPHRASE: ${JWT_PASSPHRASE}
 
     caniplanner_server:
         container_name: caniplanner_server
@@ -28,7 +26,7 @@ services:
         networks:
             - caniplanner
         ports:
-            - '8080:80'
+            - '80:8080'
         expose:
             - 8080
 
