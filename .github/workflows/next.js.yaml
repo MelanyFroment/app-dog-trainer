@@ -57,7 +57,7 @@ jobs:
               with:
                   projectBaseDir: nextjs
               env:
-                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_NEXTJS }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     build:
         needs: test
         runs-on: ubuntu-latest
