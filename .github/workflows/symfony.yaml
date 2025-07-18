@@ -40,7 +40,7 @@ jobs:
       - name: Wait for containers to be ready
         run: sleep 60
 
-      - name: Run testsss
+      - name: Run testse
         run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml'
 
       - name: SonarCloud Scan test
