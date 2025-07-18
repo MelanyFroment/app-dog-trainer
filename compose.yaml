@@ -12,6 +12,8 @@ services:
             - caniplanner
         expose:
             - 9000
+        environment:
+            JWT_PASSPHRASE: ${JWT_PASSPHRASE}
 
     caniplanner_server:
         container_name: caniplanner_server

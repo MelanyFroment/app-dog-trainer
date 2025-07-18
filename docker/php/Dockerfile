@@ -13,6 +13,7 @@ RUN apk update \
     \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug \
+    \
     && echo "xdebug.mode=coverage" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && curl -sS https://getcomposer.org/installer \
@@ -29,9 +30,5 @@ RUN echo "==> Setting up production environment..." \
     && mkdir -p /www/symfony/var /www/symfony/public \
     && chown -R www-data:www-data /www/symfony/var /www/symfony/public
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["php-fpm"]
 EXPOSE 9000

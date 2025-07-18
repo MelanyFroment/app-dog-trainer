@@ -2,12 +2,12 @@ name: Node.js CI
 
 on:
     push:
-        branches: [ "main", "dev" ]
+        branches: [main]
         paths:
             - 'nextjs/**'
             - '.github/workflows/next.js.yaml'
     pull_request:
-        branches: [ "main", "dev" ]
+        branches: [main]
         paths:
             - 'nextjs/**'
             - '.github/workflows/next.js.yaml'
@@ -17,7 +17,6 @@ permissions:
 
 jobs:
     test:
-        name: Test Next.js App
         runs-on: ubuntu-latest
 
         strategy:
@@ -38,7 +37,7 @@ jobs:
                     cache: 'npm'
                     cache-dependency-path: nextjs/package-lock.json
 
-            -   name: Cach .next build artefacts
+            -   name: Cache .next build artefacts
                 uses: actions/cache@v3
                 with:
                     path: nextjs/.next/cache
@@ -50,32 +49,32 @@ jobs:
                 run: npm ci
 
             -   name: Run unit tests with coverage
-                run: npm test -- --coverage
+                run: npm test jest --coverage
 
-#    sonar-scan:
-#        needs: test
-#        runs-on: ubuntu-latest
-#
-#        defaults:
-#            run:
-#                working-directory: nextjs
-#
-#        steps:
-#            - uses: actions/checkout@v4
-#              with:
-#                fetch-depth: 0
-#
-#            - uses: actions/setup-node@v4
-#              with:
-#                node-version: 22.x
-#
-#            - name: SonarQube Scan
-#              uses: SonarSource/sonarqube-scan-action@v4.1.0
-#              with:
-#                projectBaseDir: nextjs
-#              env:
-#                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#                  SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+    sonar-scan:
+        needs: test
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: nextjs
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 22.x
+
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@v4.1.0
+              with:
+                projectBaseDir: nextjs
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                  SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
     build:
         needs: test
