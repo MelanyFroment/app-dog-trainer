@@ -1,7 +1,9 @@
 # JetBrains IDE
 .idea/
 *.iml
-./.env
+# Environment variables
+*/.env
 .swc
+# Ignore SonarScanner
 .scannerwork
 pgdata/

@@ -29,7 +29,7 @@ class AuthControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $company = $this->createCompany();
-        $email = 'testuser@example.com';
+        $email = 'testuser' . uniqid() . '@example.com';
 
         $client->request('POST', '/api/register', [], [], [
             'CONTENT_TYPE' => 'application/json',
