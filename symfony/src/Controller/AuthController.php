@@ -50,6 +50,7 @@ class AuthController extends AbstractController
         $password = $data['password'] ?? null;
         $phone = $data['phone'] ?? null;
         $roles = $data['roles'] ?? ['ROLE_USER'];
+        $companyId = $data['company_id'] ?? null;
 
         if (!$email || !$password || !$phone) {
             return $this->json(['message' => 'Email, mot de passe et téléphone requis'], 400);
@@ -66,6 +67,14 @@ class AuthController extends AbstractController
         $user->setRoles($roles);
         $user->setCreatedDate(new \DateTimeImmutable());
 
+        if ($companyId) {
+            $company = $em->getRepository(\App\Entity\Company::class)->find($companyId);
+            if (!$company) {
+                return $this->json(['message' => 'Entreprise introuvable'], 404);
+            }
+            $user->setCompany($company);
+        }
+
         $em->persist($user);
         $em->flush();
 
@@ -74,4 +83,6 @@ class AuthController extends AbstractController
             'token' => $jwtManager->create($user),
         ], 201);
     }
+
+
 }

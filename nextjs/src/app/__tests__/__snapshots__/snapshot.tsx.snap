@@ -1,16 +1,36 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders homepage unchanged 1`] = `
+exports[`Snapshot homepage renders homepage unchanged 1`] = `
 <div>
-  <div>
-    <h1>
+  <div
+    class="p-4"
+  >
+    <h1
+      class="text-2xl font-bold mb-4"
+    >
       Home
     </h1>
-    <a
-      href="/about"
+    <div
+      class="flex gap-4"
     >
-      Page
-    </a>
+      <a
+        class="text-blue-500 hover:underline"
+        href="/login"
+      >
+        Se connecter
+      </a>
+      <a
+        class="text-blue-500 hover:underline"
+        href="/about"
+      >
+        About
+      </a>
+      <button
+        class="text-red-500 hover:underline"
+      >
+        Se déconnecter
+      </button>
+    </div>
   </div>
 </div>
 `;

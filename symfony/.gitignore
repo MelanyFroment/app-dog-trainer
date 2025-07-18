@@ -14,3 +14,18 @@
 # symfony/asset-mapper
 /public/assets/
 /assets/vendor/
+
+# Symfony
+symfony/var/
+symfony/.env.local
+symfony/.env.*.local
+symfony/config/jwt/private.pem
+symfony/config/jwt/public.pem
+
+# Node/Next.js
+nextjs/node_modules/
+nextjs/.next/
+
+# PostgreSQL
+pgdata/ 
+

@@ -1,3 +1,7 @@
 # JetBrains IDE
 .idea/
 *.iml
+./.env
+.swc
+.scannerwork
+pgdata/

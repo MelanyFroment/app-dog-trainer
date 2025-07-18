@@ -1,0 +1,104 @@
+name: Node.js CI
+
+on:
+    push:
+        branches: [ "main", "dev" ]
+        paths:
+            - 'nextjs/**'
+            - '.github/workflows/next.js.yaml'
+    pull_request:
+        branches: [ "main", "dev" ]
+        paths:
+            - 'nextjs/**'
+            - '.github/workflows/next.js.yaml'
+
+permissions:
+    contents: read
+
+jobs:
+    test:
+        name: Test Next.js App
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [ 18.x, 20.x, 22.x ]
+
+        defaults:
+            run:
+                working-directory: nextjs
+
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   name: Use Node.js ${{ matrix.node-version }}
+                uses: actions/setup-node@v4
+                with:
+                    node-version: ${{ matrix.node-version }}
+                    cache: 'npm'
+                    cache-dependency-path: nextjs/package-lock.json
+
+            -   name: Cach .next build artefacts
+                uses: actions/cache@v3
+                with:
+                    path: nextjs/.next/cache
+                    key: ${{ runner.os }}-nextjs-${{ matrix.node-version }}-${{ hashFiles('nextjs/package-lock.json') }}
+                    restore-keys: |
+                        ${{ runner.os }}-nextjs-${{ matrix.node-version }}-
+
+            -   name: Install dependencies
+                run: npm ci
+
+            -   name: Run unit tests with coverage
+                run: npm test -- --coverage
+
+            - name: Check SONAR_TOKEN presence
+              run: |
+                  if [ -z "$SONAR_TOKEN" ]; then
+                    echo "❌ SONAR_TOKEN is NOT set!"
+                    exit 1
+                  else
+                    echo "✅ SONAR_TOKEN is set and starts with: ${SONAR_TOKEN::4}******"
+                  fi
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+            - name: SonarQube Scan
+              uses: SonarSource/sonarqube-scan-action@v5
+              with:
+                  projectBaseDir: nextjs
+              env:
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+    build:
+        needs: test
+        runs-on: ubuntu-latest
+
+        defaults:
+            run:
+                working-directory: nextjs
+
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: actions/setup-node@v4
+              with:
+                node-version: 22.x
+                cache: npm
+                cache-dependency-path: nextjs/package-lock.json
+
+            - run: npm ci
+            - run: npm run build --if-present
+
+            - uses: actions/upload-artifact@v4
+              with:
+                name: next-build
+                path: nextjs/.next/**
+
+    dependency-review:
+        if: github.event_name == 'pull_request'
+        needs: test
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/dependency-review-action@v4

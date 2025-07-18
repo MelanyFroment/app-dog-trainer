@@ -5,24 +5,19 @@
     "plugin:prettier/recommended",
     "plugin:jsx-a11y/recommended"
   ],
-  "plugins": [
-    "prettier",
-    "jsx-a11y"
-  ],
+  "plugins": ["prettier", "jsx-a11y"],
   "rules": {
     "prettier/prettier": [
       "error",
       {
         "trailingComma": "all",
         "semi": false,
-        "tabWidth": 2,
+        "tabWidth": 4,
         "singleQuote": true,
         "printWidth": 80,
         "endOfLine": "auto",
         "arrowParens": "always",
-        "plugins": [
-          "prettier-plugin-tailwindcss"
-        ]
+        "plugins": ["prettier-plugin-tailwindcss"]
       },
       {
         "usePrettierrc": false
