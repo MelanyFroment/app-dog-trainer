@@ -35,7 +35,7 @@ services:
         networks:
             - caniplanner
         ports:
-            - '8080:80'
+            - '80:8080'
         expose:
             - 8080
 
