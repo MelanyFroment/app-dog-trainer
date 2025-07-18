@@ -41,4 +41,11 @@ jobs:
         run: sleep 60
 
       - name: Run tests
-        run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit'
+        run: docker compose exec caniplanner_php sh -c 'APP_ENV=test ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml'
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          projectBaseDir: symfony
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
