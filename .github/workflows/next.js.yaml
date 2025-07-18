@@ -68,7 +68,7 @@ jobs:
               with:
                 node-version: 22.x
 
-            - name: SonarQube Scan
+            - name: SonarQube Scann
               uses: SonarSource/sonarqube-scan-action@v4.1.0
               with:
                 projectBaseDir: nextjs
