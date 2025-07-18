@@ -16,7 +16,6 @@ permissions:
 
 jobs:
   symfony-tests:
-    name: Tests Symfony
     runs-on: ubuntu-latest
     environment: app-dog-trainer
     env:
