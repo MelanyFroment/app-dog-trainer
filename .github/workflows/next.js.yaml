@@ -53,38 +53,11 @@ jobs:
                 run: npm test -- --coverage
 
             - name: SonarQube Scan
-              uses: SonarSource/sonarqube-scan-action@v4.1.0
+              uses: SonarSource/sonarqube-scan-action@v5
               with:
                   projectBaseDir: nextjs
               env:
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_NEXTJS }}
-                  SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-
-#    sonar-scan:
-#        needs: test
-#        runs-on: ubuntu-latest
-#
-#        defaults:
-#            run:
-#                working-directory: nextjs
-#
-#        steps:
-#            - uses: actions/checkout@v4
-#              with:
-#                fetch-depth: 0
-#
-#            - uses: actions/setup-node@v4
-#              with:
-#                node-version: 22.x
-#
-#            - name: SonarQube Scan
-#              uses: SonarSource/sonarqube-scan-action@v4.1.0
-#              with:
-#                projectBaseDir: nextjs
-#              env:
-#                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#                  SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-
     build:
         needs: test
         runs-on: ubuntu-latest
